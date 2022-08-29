@@ -8,7 +8,7 @@ const pg = require("pg");
 
 const PORT = process.env.PORT || 3005;
 
-const pool = new pg.Pool({ database: "daily_goals" });
+const pool = new pg.Pool({ database: "daily_goals", user: "postgres" });
 
 const app = express();
 app.use(cors());
@@ -22,7 +22,7 @@ app.get("/users", (req, res) => {
 });
 
 // GET GOALS
-app.get("goals", (req, res) => {
+app.get("/goals", (req, res) => {
   pool.query("SELECT * FROM goals").then((result) => {
     res.send(result.rows);
   });
