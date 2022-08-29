@@ -11,11 +11,11 @@ CREATE TABLE users (
 
 CREATE TABLE goals (
     id SERIAL,
-    goal TEXT,
-    steps TEXT,
-    notes TEXT
+    description TEXT,
+    completed BOOLEAN
 );
+
 
 INSERT INTO users(firstName, lastName, userName, email) VALUES ('Matt', 'Rust', 'mrust', 'mrust@email.com');
 
-INSERT INTO goals(goal, steps, notes) VALUES ('Become a better learner', 'Ask questions, Ask for help, Take breaks', 'These are generic notes');
+INSERT INTO goals(description, completed) VALUES ('Become a better learner', FALSE);

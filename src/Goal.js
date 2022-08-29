@@ -12,7 +12,7 @@ export default function Goal({ goal, toggleGoal }) {
           checked={goal.complete}
           onChange={handleGoalClick}
         />
-        {goal.name}
+        {goal.description}
       </label>
     </div>
   );

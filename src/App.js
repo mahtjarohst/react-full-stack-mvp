@@ -1,21 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import GoalList from "./GoalList";
-import { v4 as uuidv4 } from "uuid";
-
-const LOCAL_STORAGE_KEY = "goalyMcGoalerson";
 
 function App() {
   const [goals, setGoals] = useState([]);
   const goalNameRef = useRef();
 
   useEffect(() => {
-    const storedGoals = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-    if (storedGoals) setGoals(storedGoals);
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(goals));
-  }, [goals]);
+    fetch("http://localhost:3005/goals", { mode: "cors" })
+    .then((res) => res.json())
+    .then((goals) => {
+      setGoals(goals)
+    })
+  }, [])
 
   function toggleGoal(id) {
     const newGoals = [...goals];
@@ -27,24 +23,35 @@ function App() {
   function handleAddGoal(e) {
     const name = goalNameRef.current.value;
     if (name === "") return;
-    setGoals((prevGoals) => {
-      return [...prevGoals, { id: uuidv4(), name: name, complete: false }];
-    });
-    goalNameRef.current.value = null;
-  }
 
+    fetch("http://localhost:3005/goals", {
+      mode: "cors",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ description: name }),
+    })
+      .then((res) =>  res.json())
+      .then ((goal) => {
+        setGoals(goals.concat(goal))
+      })
+
+    goalNameRef.current.value = null;
+
+  }
   function handleClearGoals() {
     const newGoals = goals.filter(goal => !goal.complete)
     setGoals(newGoals)
   }
-
+console.log(goals)
   return (
     <>
       <GoalList goals={goals} toggleGoal={toggleGoal} />
       <input ref={goalNameRef} type="text" />
       <button onClick={handleAddGoal}>Add New Goal</button>
       <button onClick={handleClearGoals}>Clear Completed Goals</button>
-      <div>{goals.filter((goal) => !goal.complete).length} Goals Left</div>
+      <div>{goals.filter((goal) => !goal.complete).length} Goal(s) Left</div>
     </>
   );
 }

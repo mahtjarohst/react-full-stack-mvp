@@ -103,11 +103,11 @@ app.post("/users", (req, res) => {
 
 // POST GOAL
 app.post("/goals", (req, res) => {
-  const { goal, steps, notes } = req.body;
+  const { description } = req.body;
   pool
     .query(
-      `INSERT INTO goals (goal, steps, notes) VALUES ($1, $2, $3) RETURNING *`,
-      [goal, steps, notes]
+      `INSERT INTO goals (description, completed) VALUES ($1, FALSE) RETURNING *`,
+      [description]
     )
     .then((data) => {
       res.send(data.rows[0]);
